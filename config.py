@@ -34,10 +34,13 @@ training_epochs = 1
 
 num_startingpoints = 1
 
-process_time = False
-
 data_dir = './data'
 dataset_dir = data_dir + '/dataset'
 saved_models_dir = data_dir + '/saved_models'
 training_data_dir = data_dir + '/traning_data'
 results_dir = data_dir + '/results'
+
+# analysis
+reference_sample = 'd1'
+process_time = False
+plot_interval = ()
