@@ -8,7 +8,7 @@ if __name__ == '__main__':
     import time
 
     from DilatedNetwork import Network
-    from config import net_configs, batch_size, training_epochs, classes, num_startingpoints
+    from config import net_configs, batch_size, training_epochs, classes, num_startingpoints, dataset_dir, saved_models_dir, training_data_dir
 
     def train_net(net, optimizer, criterion, trainloader, epochs=1):
         print('training net')
@@ -48,7 +48,7 @@ if __name__ == '__main__':
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
 
-    trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
+    trainset = torchvision.datasets.CIFAR10(root=dataset_dir, train=True, download=True, transform=transform)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
 
     # loss function
@@ -63,7 +63,7 @@ if __name__ == '__main__':
             print(config)
             
             # skip current config if save file already exists
-            if os.path.isfile(f'./cifar10saves/start_{startingpoint_index}/{config["name"]}'):
+            if os.path.isfile(f'{saved_models_dir}/start_{startingpoint_index}/{config["name"]}'):
                 print(f'skipping: the save for {config["name"]} already exists')
                 continue
                                 
@@ -80,7 +80,7 @@ if __name__ == '__main__':
             loss_list, time_list = train_net(net=current_net, optimizer=current_optimizer, epochs=training_epochs, criterion=criterion, trainloader=trainloader)
             
             # save loss history and time from training
-            path = pathlib.Path(f'./cifar10training/start_{startingpoint_index}/{config["name"]}')
+            path = pathlib.Path(f'{training_data_dir}/start_{startingpoint_index}/{config["name"]}')
             path.mkdir(parents=True, exist_ok=True)
             
             with path.joinpath('loss.txt').open('w+') as outfile:
@@ -94,9 +94,9 @@ if __name__ == '__main__':
                 print('done writing time to file')
             
             # save state_dict of net
-            path = pathlib.Path(f'./cifar10saves/start_{startingpoint_index}')
+            path = pathlib.Path(f'{saved_models_dir}/start_{startingpoint_index}')
             path.mkdir(parents=True, exist_ok=True)
-            torch.save(current_net.state_dict(), f'./cifar10saves/start_{startingpoint_index}/{config["name"]}')
+            torch.save(current_net.state_dict(), f'{saved_models_dir}/start_{startingpoint_index}/{config["name"]}')
             print('saved state dict')
             
             # cleanup
